@@ -1,0 +1,6 @@
+build/
+forkbomb-killer
+forkbomb-tester/forkbomb
+spdlog
+tags
+*.swp

@@ -1,0 +1,11 @@
+[Unit]
+Description=A service that detects and kills fork-bombs
+
+[Service]
+Type=notify
+TimeoutStartSec=10
+ExecStart=/usr/bin/forkbomb-killer
+#Environment=LOGGER=info
+
+[Install]
+WantedBy=multi-user.target
