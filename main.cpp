@@ -1,8 +1,13 @@
+#include <algorithm>
 #include <chrono>
 #include <fcntl.h>
 #include <filesystem>
+#include <fstream>
 #include <iostream>
+#include <istream>
+#include <iterator>
 #include <memory>
+#include <string>
 #include <sys/inotify.h>
 #include <system_error>
 #include <unordered_map>
@@ -81,11 +86,30 @@ void addAllRecursively(Inotify& i, std::filesystem::path const& path, std::strin
 	}
 }
 
+static std::string read_file(const std::string &path) {
+	std::ifstream ifs(path);
+
+	// https://stackoverflow.com/a/2912614
+	std::string content((std::istreambuf_iterator<char>(ifs)), (std::istreambuf_iterator<char>()));
+
+	content.erase(std::remove(content.begin(), content.end(), '\n'), content.cend());
+	return content;
+}
+
 void kill_group_for_pid_event(InotifyEvent&& e) {
 	assert(e.path_of_watch.ends_with("/" + filename_to_listen_to));
 
 	std::string path = e.path_of_watch.substr(0, e.path_of_watch.length() - filename_to_listen_to.length());
 	spdlog::info("Killing cgroup \"{}\"...", path);
+	try {
+		spdlog::info("pids.current = {}, pids.peak = {}, pids.max = {}, pids.events = {}",
+				read_file(path + "pids.current"),
+				read_file(path + "pids.peak"),
+				read_file(path + "pids.max"),
+				read_file(path + "pids.events"));
+	} catch (std::exception& e) {
+		spdlog::error("Could not log additional parameters about cgroup being killed: {}", e.what());
+	}
 	path = path + "cgroup.kill";
 
 	int fd = open(path.c_str(), O_WRONLY);

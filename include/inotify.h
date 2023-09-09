@@ -4,6 +4,7 @@
 #include <functional>
 #include <optional>
 #include <string>
+#include <cinttypes>
 #include <unordered_map>
 
 struct InotifyError {
