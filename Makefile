@@ -102,7 +102,7 @@ $(BUILDDIR):
 .PHONY: install
 install: release
 	$(Q)install -Dvp -m 0755 -o root -g root -t /usr/bin/ forkbomb-killer
-	$(Q)install -Dvp --backup=numbered -m 0640 -o root -g root forkbomb-killer.service /etc/systemd/system/forkbomb-killer.service
+	$(Q)install -Dvp --backup=numbered -m 0644 -o root -g root forkbomb-killer.service /etc/systemd/system/forkbomb-killer.service
 
 
 include $(wildcard $(BUILDDIR)/*.d)
