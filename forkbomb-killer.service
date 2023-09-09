@@ -1,5 +1,5 @@
 [Unit]
-Description=A service that detects and kills fork-bombs
+Description=service to detect and kill fork-bombs
 
 [Service]
 Type=notify
